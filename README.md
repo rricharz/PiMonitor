@@ -18,10 +18,18 @@ Designed for Raspberry Pi 5 running Raspberry Pi OS Trixie.
 - Python 3
 - Tkinter (`python3-tk`)
 
+## Desktop Launcher
+
+Install the desktop launcher
+
+```bash
+cp pimonitor.desktop ~/.local/share/applications/
+```
+
 ## Running
 
 ```bash
 python3 pimonitor.py
 ```
 
-The program can also be launched using a desktop launcher.
+The program can also be launched using the desktop launcher.

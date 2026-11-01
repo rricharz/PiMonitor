@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pi Monitor
+Comment=Raspberry Pi system monitor
+Exec=python3 /home/rricharz/Projects/PiMonitor/pimonitor.py
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;
+StartupNotify=true
