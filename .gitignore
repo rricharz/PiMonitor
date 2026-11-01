@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Python virtual environments
+.venv/
+venv/
+
+# Geany temporary files
+*~
+*.bak
+
+# Local editor settings
+.geany/
