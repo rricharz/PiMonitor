@@ -23,6 +23,20 @@ def command(args):
     except (OSError, subprocess.CalledProcessError):
         return "Unknown"
 
+def system_disk():
+    """Identify the device containing the running root filesystem."""
+    device = command(["findmnt", "-n", "-o", "SOURCE", "/"])
+
+    if device.startswith("/dev/nvme"):
+        disk = "NVMe SSD"
+    elif device.startswith("/dev/mmcblk"):
+        disk = "SD card"
+    elif device.startswith("/dev/sd"):
+        disk = "USB disk"
+    else:
+        disk = "Unknown"
+
+    return disk, device
 
 def system_info():
     """Collect static system information."""
@@ -38,6 +52,10 @@ def system_info():
     info["Kernel"] = platform.release()
     info["Architecture"] = platform.machine()
     info["Kernel type"] = platform.architecture()[0]
+    disk, device = system_disk()
+    info["System disk"] = disk
+    info["System partition"] = device
+
 
     # Total system memory
     with open("/proc/meminfo") as f:
@@ -137,7 +155,7 @@ for name in (
     "CPU usage",
     "Memory used",
     "Memory available",
-    "SD card usage"
+    "System usage"
 ):
     row = ttk.Frame(live_frame)
     row.pack(fill="x", pady=4)
@@ -227,7 +245,7 @@ def update_status():
     )
 
     # SD card
-    live_labels["SD card usage"].config(
+    live_labels["System usage"].config(
         text=f"{disk_usage():.1f} %"
     )
 
