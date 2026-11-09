@@ -3,7 +3,7 @@
 # Pi Monitor - Raspberry Pi system dashboard
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import platform
 import socket
 import subprocess
@@ -126,10 +126,29 @@ def disk_usage():
     return 100 * used / total
 
 
+# Launch the Home backup in a separate terminal window.
+def backup_home():
+    script = "/home/rricharz/bin/Backup_Home_Samba"
+    terminal = shutil.which("x-terminal-emulator") or shutil.which("lxterminal")
+    if not os.path.isfile(script):
+        messagebox.showerror("Backup Home", f"Backup script not found:\n{script}")
+        return
+    if not terminal:
+        messagebox.showerror("Backup Home", "No terminal emulator was found.")
+        return
+
+    # The terminal stays open so the backup result can be inspected.
+    command = '"$1"; result=$?; echo; echo "Backup exit status: $result"; read -r -p "Press Enter to close..."'
+    try:
+        subprocess.Popen([terminal, "-e", "bash", "-c", command, "bash", script])
+    except OSError as exc:
+        messagebox.showerror("Backup Home", str(exc))
+
+
 # Main window
 root = tk.Tk()
 root.title("Pi Monitor")
-root.geometry("500x350")
+root.geometry("500x390")
 root.minsize(450, 300)
 
 frame = ttk.Frame(root, padding=20)
@@ -183,12 +202,12 @@ def toggle_details():
         details.pack_forget()
         details_visible.set(False)
         toggle_button.config(text="Show system information ▾")
-        root.geometry("500x350")
+        root.geometry("500x390")
     else:
         details.pack(fill="x", pady=10)
         details_visible.set(True)
         toggle_button.config(text="Hide system information ▴")
-        root.geometry("500x600")
+        root.geometry("500x640")
 
 
 toggle_button = ttk.Button(
@@ -197,6 +216,11 @@ toggle_button = ttk.Button(
     command=toggle_details
 )
 toggle_button.pack(fill="x")
+
+# Manual backup shortcut
+ttk.Button(
+    frame, text="Backup Home", command=backup_home
+).pack(fill="x", pady=(10, 0))
 
 for name, value in system_info().items():
     row = ttk.Frame(details)
